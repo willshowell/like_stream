@@ -1,0 +1,170 @@
+/* General */
+body, input, button, textarea {
+  font-family: 'Varela Round', Helvetica Neue, Helvetica, Arial, serif;
+}
+body {
+  font-size: 1em;
+  color: #000;
+  font-weight: 400;
+  background: #FFF;
+  position: relative;
+}
+a {
+  text-decoration: none;
+  color: #F50;
+}
+a:hover{
+  color: #000;
+}
+
+/* Typography */
+h1, h2, h3, h4 {
+  font-size: 1.15em;
+  font-weight: normal;
+  margin: 0;
+  line-height: 1em;
+}
+h1 {
+  text-align: center;
+  line-height: 30px;
+}
+h2 {
+  margin: 0 0 10px;
+}
+h3 {
+  text-align: center;
+  padding: 40px 0 0 40px;
+  font-size: 1em;
+}
+h4 {
+  margin: 10px 0 0;
+  opacity: .7;
+  font-size: 2em;
+}
+h5 {
+  margin 0;
+}
+p {
+  margin: 0;
+  line-height: 1.5em;
+}
+
+/* Header */
+header {
+  width: 100%;
+  background: #FFF;
+  padding: 10px;
+}
+
+/* Main */
+.main {
+  max-width: 800px;
+  margin: 40px auto 0;
+  background: #FFF;
+  padding-bottom: 20px;
+}
+.skinny {
+  max-width: 320px;
+  padding: 40px;
+}
+
+/* Footers */
+footer{
+  color: #000;
+  text-align: center;
+  font-size: .75em;
+  margin: 40px;
+}
+
+footer p {
+  opacity: .65;
+}
+
+/* Forms */
+form {
+  margin: 0;
+  padding: 40px;
+
+}
+input {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid #F0F0F0;
+  outline: 0;
+  background: #FFF;
+  padding: 15px 0 4px;
+  margin: 0 0 5px;
+  color: #000;
+}
+input:focus {
+  border-color: #BBB;
+  color: #000;
+}
+button {
+  width: 100%;
+  padding: 10px 0;
+  margin: 10px 0;
+  text-align: center;
+  background: #F50;
+  color: #fff;
+  border: 0;
+  border-radius: 4px;
+  opacity: .8
+}
+
+/* Notifications */
+.notifications {
+  text-align: center;
+  padding: 10px 20px;
+  color: #555;
+}
+
+/* Grid */
+.row {
+  max-width: 800px;
+  padding: 0 40px;
+  margin: 0 auto;
+}
+.row:before, .row:after {
+  content: '';
+  display: table;
+}
+.row:after{
+  clear: both;
+}
+.grid-100{
+  display: inline-block;;
+  float: left;
+  width: 100%;
+}
+.grid-50{
+  display: inline-block;
+  float: left;
+  width: 49%;
+}
+.grid-33{
+  display: inline-block;
+  float: left;
+  width: 33%;
+}
+.grid-25{
+  display: inline-block;
+  float: left;
+  width: 20%;
+  margin: 0 2.25%;
+}
+
+/* Other */
+.left {
+  text-align: left;
+}
+.right {
+  text-align: right;
+}
+.separate {
+  border-bottom: solid thin #F50;
+}
+
+
+
+
