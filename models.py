@@ -73,6 +73,6 @@ class Track(BaseModel):
 
 
 def initialize():
-    DATABASE.connect()
-    DATABASE.create_tables([User, Target, UserTarget, Track], safe=True)
-    DATABASE.close()
+    database.connect()
+    database.create_tables([User, Target, UserTarget, Track], safe=True)
+    database.close()
