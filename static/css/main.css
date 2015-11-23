@@ -107,10 +107,9 @@ button {
   text-align: center;
   background: #F50;
   color: #fff;
-  border: 0;
+  border: #F50;
   border-radius: 4px;
-  opacity: .8
-}
+} 
 
 /* Notifications */
 .notifications {
@@ -164,7 +163,9 @@ button {
 .separate {
   border-bottom: solid thin #F50;
 }
-
+.small-text {
+  border-right: 5px;
+}
 
 
 

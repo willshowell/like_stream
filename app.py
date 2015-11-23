@@ -2,6 +2,7 @@ from flask import Flask, g, render_template, redirect, url_for, flash
 from flask.ext.bcrypt import check_password_hash
 from flask.ext.login import (LoginManager, login_user, current_user,
                              login_required, logout_user)
+from secrets import APP_SECRET_KEY
 
 import models, forms
 
@@ -10,11 +11,10 @@ HOST = '127.0.0.1'
 PORT = 5000
 
 app = Flask(__name__)
-app.secret_key = 'temp_secret_key'
+app.secret_key = APP_SECRET_KEY
 
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = 'login'
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -22,6 +22,10 @@ def load_user(user_id):
         return models.User.get(models.User.id == user_id)
     except models.DoesNotExist:
         return None
+
+@login_manager.unauthorized_handler
+def unauthorized():
+    return redirect(url_for('login'))
 
 @app.before_request
 def before_request():
@@ -43,6 +47,9 @@ def index():
 
 @app.route('/login', methods=('GET', 'POST'))
 def login():
+    if current_user.is_authenticated:
+        flash("You've been logged out.", "success")
+        logout_user()
     form = forms.LoginForm()
     if form.validate_on_submit():
         try:
@@ -54,19 +61,28 @@ def login():
                 login_user(user)
                 return redirect(url_for('index'))
             else:
-                flash("Your email or password doesn't match.", "error")
+                flash("Your email and password do not match.", "error")
     return render_template('login.html', form=form)
 
 @app.route('/logout')
 @login_required
 def logout():
+    flash("You've been logged out.", "success")
     logout_user()
     return redirect(url_for('index'))
 
 @app.route('/register', methods=('GET', 'POST'))
 def register():
+    if current_user.is_authenticated:
+        flash("You've been logged out.", "success")
+        logout_user()
     form = forms.RegisterForm()
     if form.validate_on_submit():
+        models.User.create_user(
+            username = form.username.data,
+            email = form.email.data,
+            password = form.password.data
+        )
         return redirect(url_for('stream'))
     return render_template('register.html', form=form)
 
@@ -75,10 +91,14 @@ def register():
 def stream():
     return render_template('stream.html')
 
-@app.route('/profile')
+@app.route('/profile', methods=('GET', 'POST'))
 @login_required
 def profile():
-    return render_template('profile.html')
+    targets = current_user.get_targets()
+    form = forms.TargetForm()
+    return render_template('profile.html', 
+                           form=form, 
+                           targets=targets)
 
 if __name__ == '__main__':
     models.initialize()

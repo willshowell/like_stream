@@ -25,7 +25,7 @@ class User(UserMixin, BaseModel):
     is_admin = BooleanField(default=False)
 
     def get_targets(self):
-        pass
+        return [1, 23, 456, 7890, 21, 13, 223]
 
     @classmethod
     def create_user(cls, username, email, password, admin=False):

@@ -3,7 +3,7 @@
 	{{ field(placeholder=field.label.text) }}
 	{% if field.errors %}
 		{% for error in field.errors %}
-			<div class="notification error">{{ error }}</div>
+			<div class="notification error right" style="font-size: 0.9em;">{{ error }}</div>
 		{% endfor %}
 	{% endif %}
 	
