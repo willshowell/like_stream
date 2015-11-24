@@ -1,5 +1,5 @@
 from flask_wtf import Form
-from wtforms import StringField, PasswordField
+from wtforms import StringField, PasswordField, IntegerField
 from wtforms.validators import (DataRequired, Length, EqualTo, 
                                 Email, Regexp, ValidationError)
 
@@ -59,8 +59,8 @@ class LoginForm(Form):
         ])
 
 class TargetForm(Form):
-    sc_username = StringField(
-        'SoundCloud Username',
+    sc_user_profile = IntegerField(
+        'SoundCloud Profile ID',
         validators=[
             DataRequired()
         ])
