@@ -24,8 +24,12 @@ class User(UserMixin, BaseModel):
     joined_at = DateTimeField(default=datetime.datetime.now)
     is_admin = BooleanField(default=False)
 
-    def get_targets(self):
-        return [1, 23, 456, 7890, 21, 13, 223]
+    def targets(self):
+        return (Target
+                .select()
+                .join(UserTarget)
+                .where(UserTarget.user == self)
+                .order_by(Target.added_at))
 
     @classmethod
     def create_user(cls, username, email, password, admin=False):
@@ -47,10 +51,10 @@ class Target(BaseModel):
     added_at = DateTimeField(default=datetime.datetime.now)
 
     @classmethod
-    def create_target(cls, id):
+    def create_target(cls, sc_id):
         try:
             with database.transaction():
-                cls.create(sc_id=id)
+                cls.create(sc_id=sc_id)
         except IntegrityError:
             raise ValueError("Target already exists")
 
@@ -59,6 +63,15 @@ class Target(BaseModel):
 class UserTarget(BaseModel):
     user = ForeignKeyField(User)
     target = ForeignKeyField(Target)
+
+    @classmethod
+    def create_usertarget(cls, user, target):
+        try:
+            UserTarget.get( UserTarget.user == user, UserTarget.target == target)
+            raise ValueError("Relationship already exists")
+        except DoesNotExist:
+            with database.transaction():
+                cls.create(user=user, target=target)
 
 
 # a track liked by one of the targets
