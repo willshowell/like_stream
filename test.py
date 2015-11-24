@@ -7,26 +7,54 @@ scid = SOUNDCLOUD_CLIENT_ID
 client = soundcloud.Client(
 	client_id=scid)
 
+def resolve_user_id(username):
+	user = client.get('/resolve', url='http://soundcloud.com/{}'.format(username))
+	return user.id
 
-username='will-howell-1'
+def get_track_name(track_id):
+	track = client.get('/tracks/{}'.format(track_id))
+	return track.title
 
-user = client.get('/resolve', url='http://soundcloud.com/{}'.format(username))
+def get_favorites_count(user_id):
+	user = client.get('/users/{}'.format(user_id))
+	return user.public_favorites_count
+
+def get_favorites_list(user_id):
+	count = get_favorites_count(user_id)
+	favorites_left = count
+	favorites = []
+	while favorites_left > 0:
+		offset = count - favorites_left
+		returned_favorites = client.get('/users/{}/favorites'.format(user_id), 
+		                                offset=offset,
+		                                limit=20)
+		for favorite in returned_favorites:
+			favorites.append(favorite.id)
+		favorites_left -= len(returned_favorites)
+	return favorites
+
+name='sfloyd'
+userid = resolve_user_id(name)
+print(userid)
+ids = get_favorites_list(userid)
+print(ids)
+print(len(ids))
+for track in ids:
+	print(get_track_name(track))
 
 
-print("User {} has {} likes!".format(user.id, user.public_favorites_count) )
-
-
-favorites_left = user.public_favorites_count
+'''
+favorites_left = count
 favorites = []
 while (favorites_left):
-	offset = user.public_favorites_count - favorites_left
-	print("Trying to get from offset {}".format(offset))
-	returned_favorites = client.get('/users/{}/favorites'.format(user.id), offset=offset)
-	print("Received {} faves".format(len(returned_favorites)))
+	offset = count - favorites_left
+	returned_favorites = client.get('/users/{}/favorites'.format(userid), offset=offset)
 	favorites.extend(returned_favorites)
 	favorites_left -= len(returned_favorites)
 	if favorites_left < 1:
 		break
 
+ct = 0
 for favorite in favorites:
-	print("{} - {}".format(favorite.id, favorite.title))
+	ct+=1
+	print("{} - {}".format(ct, favorite.title))'''
