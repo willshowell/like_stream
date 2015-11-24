@@ -94,10 +94,31 @@ def stream():
 @app.route('/profile', methods=('GET', 'POST'))
 @login_required
 def profile():
-    targets = current_user.get_targets()
-    form = forms.TargetForm()
+    targets = current_user.targets()
+    new_target_form = forms.TargetForm()
+    if new_target_form.validate_on_submit():
+        # Create a target if it doesn't already exist
+        try:
+            models.Target.create_target(
+                sc_id=new_target_form.sc_user_profile.data
+            )
+        except ValueError:
+            pass
+
+        # Create usertarget
+        try:
+            models.UserTarget.create_usertarget(
+                user=g.user._get_current_object(),
+                target=models.Target.get(
+                    models.Target.sc_id == new_target_form.sc_user_profile.data
+                )
+            )
+        except ValueError:
+            flash("You are already following that user", "error")
+            pass
+
     return render_template('profile.html', 
-                           form=form, 
+                           form=new_target_form, 
                            targets=targets)
 
 if __name__ == '__main__':
