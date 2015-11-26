@@ -1,4 +1,4 @@
-from flask import Flask, g, render_template, redirect, url_for, flash
+from flask import Flask, g, render_template, redirect, url_for, flash, request
 from flask.ext.bcrypt import check_password_hash
 from flask.ext.login import (LoginManager, login_user, current_user,
                              login_required, logout_user)
@@ -141,10 +141,23 @@ def profile():
                            new_target_form=new_target_form, 
                            targets=targets)
 
-@app.route('/delete_target', methods=('GET','POST'))
+@app.route('/delete_target', methods=['GET','POST'])
 @login_required
 def delete_target():
-    flash("Oops that feature doesn't exist yet.", "message")
+    if request.method != 'POST':
+        return redirect(url_for('profile'))
+
+    # Remove usertarget link
+    try:
+        models.UserTarget.delete_usertarget(
+            user=g.user._get_current_object(),
+            target=models.Target.get(
+                models.Target.sc_id == request.form['target']
+            )
+        )
+        flash("You are no longer following this user.", "success")
+    except ValueError:
+        flash("Error removing this user.", "error")
     return redirect(url_for('profile'))
 
 if __name__ == '__main__':

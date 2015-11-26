@@ -22,15 +22,17 @@
       <th>Permalink</th>
       <th>Remove</th>
     </tr>
-    <form method="POST" action="" class="form">
       {% for target in targets %}
         <tr>
           <td>{{ target.permalink }}</td>
-          <td><a href="{{url_for('delete_target')}}">X</a>
-
-
+          <th>
+            <form method="POST" action="/delete_target" class="delete">
+             <input type="hidden" value="{{ target.sc_id }}" name="target" />
+             <button class="delete" type="submit">X</button>
+            </form>
+          </th>
+        </tr>
       {% endfor %}
-    </form>
   </table>
 </div>
 {% endblock %}

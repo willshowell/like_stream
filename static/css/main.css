@@ -109,7 +109,13 @@ button {
   color: #fff;
   border: #F50;
   border-radius: 4px;
-} 
+}
+.delete {
+  padding: 0px;
+  margin: 0px;
+  color: #f50;
+  background: #FFF;
+}
 
 /* Notifications */
 .notifications {

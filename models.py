@@ -75,6 +75,13 @@ class UserTarget(BaseModel):
             with database.transaction():
                 cls.create(user=user, target=target)
 
+    @classmethod
+    def delete_usertarget(cls, user, target):
+        try:
+            desired_ut = UserTarget.get( UserTarget.user == user, UserTarget.target == target)
+            desired_ut.delete_instance()
+        except DoesNotExist:
+            raise ValueError("Relationship did not exist")
 
 # a track liked by one of the targets
 # tracks are many-to-one with target

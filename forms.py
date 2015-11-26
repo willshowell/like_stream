@@ -64,3 +64,6 @@ class TargetForm(Form):
         validators=[
             DataRequired()
         ])
+
+class DeleteTargetForm(Form):
+    pass
