@@ -5,7 +5,7 @@
 <div class="row">
   Follow a New User:
   <form method="POST" action="" class="form">
-      {% for field in form %}
+      {% for field in new_target_form %}
         {{ render_field(field) }}
       {% endfor %}
       <button type="submit" id="submit">Add</button>
@@ -19,15 +19,18 @@
   <br><br>
   <table>
     <tr>
-      <th>User</th>
+      <th>Permalink</th>
       <th>Remove</th>
     </tr>
-    {% for target in targets %}
-    <tr>
-      <th>{{ target.sc_id }}</th>
-      <th><a href="">X</a></th>
-    </tr> 
-    {% endfor %}
+    <form method="POST" action="" class="form">
+      {% for target in targets %}
+        <tr>
+          <td>{{ target.permalink }}</td>
+          <td><a href="{{url_for('delete_target')}}">X</a>
+
+
+      {% endfor %}
+    </form>
   </table>
 </div>
 {% endblock %}

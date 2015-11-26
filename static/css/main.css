@@ -116,6 +116,14 @@ button {
   text-align: center;
   padding: 10px 20px;
   color: #555;
+  background-color: #CCC;
+  margin-top: 10px;
+  border: #CCC;
+  border-radius: 4px;
+}
+.success {
+  border: #CCC;
+  background-color: #8F8;
 }
 
 /* Grid */
@@ -149,8 +157,12 @@ button {
 .grid-25{
   display: inline-block;
   float: left;
-  width: 20%;
-  margin: 0 2.25%;
+  width: 25%;
+}
+.grid-75{
+  display: inline-block;
+  float: left;
+  width: 75%;
 }
 
 /* Other */

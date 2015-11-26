@@ -33,15 +33,20 @@ def get_favorites_list(user_id):
 		favorites_left -= len(returned_favorites)
 	return favorites
 
-name='sfloyd'
+name='will-howell-1'
 userid = resolve_user_id(name)
 print(userid)
+
+user = client.get('/users/{}'.format(userid))
+print(user.avatar_url)
+
+'''
 ids = get_favorites_list(userid)
 print(ids)
 print(len(ids))
 for track in ids:
 	print(get_track_name(track))
-
+'''
 
 '''
 favorites_left = count

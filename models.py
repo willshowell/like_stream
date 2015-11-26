@@ -29,7 +29,7 @@ class User(UserMixin, BaseModel):
                 .select()
                 .join(UserTarget)
                 .where(UserTarget.user == self)
-                .order_by(Target.added_at))
+                .order_by(UserTarget.added_at.desc()))
 
     @classmethod
     def create_user(cls, username, email, password, admin=False):
@@ -48,13 +48,14 @@ class User(UserMixin, BaseModel):
 # targets are many-to-many with users
 class Target(BaseModel):
     sc_id = BigIntegerField(unique=True)
+    permalink = CharField()
     added_at = DateTimeField(default=datetime.datetime.now)
 
     @classmethod
-    def create_target(cls, sc_id):
+    def create_target(cls, sc_id, permalink):
         try:
             with database.transaction():
-                cls.create(sc_id=sc_id)
+                cls.create(sc_id=sc_id, permalink=permalink)
         except IntegrityError:
             raise ValueError("Target already exists")
 
@@ -63,6 +64,7 @@ class Target(BaseModel):
 class UserTarget(BaseModel):
     user = ForeignKeyField(User)
     target = ForeignKeyField(Target)
+    added_at = DateTimeField(default=datetime.datetime.now)
 
     @classmethod
     def create_usertarget(cls, user, target):

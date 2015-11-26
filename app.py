@@ -4,6 +4,8 @@ from flask.ext.login import (LoginManager, login_user, current_user,
                              login_required, logout_user)
 from secrets import APP_SECRET_KEY
 
+import soundcloud_helper as sch
+
 import models, forms
 
 DEBUG = True
@@ -15,6 +17,7 @@ app.secret_key = APP_SECRET_KEY
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -89,6 +92,8 @@ def register():
 @app.route('/stream')
 @login_required
 def stream():
+    #TODO Get an ordered list of all the tracks
+    #TODO Display them next to a picture of who liked them
     return render_template('stream.html')
 
 @app.route('/profile', methods=('GET', 'POST'))
@@ -97,29 +102,50 @@ def profile():
     targets = current_user.targets()
     new_target_form = forms.TargetForm()
     if new_target_form.validate_on_submit():
-        # Create a target if it doesn't already exist
+        # Try to resolve the username
+        try:
+            user_id, permalink=sch.resolve_user_id(new_target_form.sc_user_profile.data)
+        except ValueError:
+            flash("This user doesn't seem to exist. Try a different name.", "error")
+            return render_template('profile.html',
+                                   form=new_target_form,
+                                   targets=targets)
+
+        # Create a target from that id if it doesn't already exist
         try:
             models.Target.create_target(
-                sc_id=new_target_form.sc_user_profile.data
+                sc_id=user_id,
+                permalink=permalink
             )
+            #TODO get and store this target's favorites
+            flash("This user is now being tracked.", "success")
         except ValueError:
+            flash("This user is already being tracked.", "message")
             pass
 
-        # Create usertarget
+        # Map the current user to that target
         try:
             models.UserTarget.create_usertarget(
                 user=g.user._get_current_object(),
                 target=models.Target.get(
-                    models.Target.sc_id == new_target_form.sc_user_profile.data
+                    models.Target.sc_id == user_id
                 )
             )
+            flash("You are now following them.", "success")
         except ValueError:
-            flash("You are already following that user", "error")
-            pass
+            flash("You are already following this user.", "error")
+
+    # Check if any targets needed to be deleted
 
     return render_template('profile.html', 
-                           form=new_target_form, 
+                           new_target_form=new_target_form, 
                            targets=targets)
+
+@app.route('/delete_target', methods=('GET','POST'))
+@login_required
+def delete_target():
+    flash("Oops that feature doesn't exist yet.", "message")
+    return redirect(url_for('profile'))
 
 if __name__ == '__main__':
     models.initialize()
