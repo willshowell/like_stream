@@ -1,0 +1,50 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+<p>
+	This site was built as an experiment in using the 
+	<a href="http://soundcloud.com/">SoundCloud</a> public API along with 
+	<a href="http://flask.pocoo.org">Flask</a>. The source code can be found on
+	<a href="https://github.com/willshowell/like_stream">GitHub</a>.
+</p>
+<br>
+<h2>What is it?</h2>
+<p>
+	By creating an account, you will be able follow the likes of different SoundCloud 
+	users such as your friends, music curators, and favorite artists. Over time, 
+	the site will monitor their likes to generate a stream of new songs you know
+	you'll love. It makes it easier to follow the favorite songs of many users
+	without having to manually monitor each user.
+</p>
+<br>
+<h2>My friends all repost their favorite tracks. This seems dumb.</h2> 
+<p>
+	Your friends are more practical than mine.
+</p>
+<br>
+<h2>How is a stream generated?</h2>
+<p>
+	SoundCloud does not provide timestamps of when songs have been liked by its 
+	users. When you start following a new user, the site will check to see if that 
+	user is already being tracked. If so, you're in luck: a history with timestamps
+	will have already been created for them, and their likes will fit seamlessly
+	into your stream. If not, no worries, that user's most recent likes will be 
+	added to the top of your stream and tracking will begin. After a few days,
+	your stream will accurately reflect the likes of all the users you follow.
+</p>
+<br>
+<h2>How real-time is it?</h2>
+<p>
+	That depends. A background process will be collecting information on all the
+	tracked users. The frequency of updates will be subject to the
+	number of users to track and hosting service chosen.
+</p>
+<br>
+<h2>Can I stalk you?</h2>
+<p>
+	Yeah! Check out my site and resume (hint hint) at 
+	<a href="http://willshowell.com">willshowell.com</a>.
+</p>
+
+{% endblock %}
