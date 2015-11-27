@@ -3,6 +3,8 @@ import datetime
 from flask.ext.bcrypt import generate_password_hash
 from flask.ext.login import UserMixin
 from peewee import *
+from random import shuffle
+
 
 DATABASE = 'like_stream.db'
 
@@ -31,6 +33,13 @@ class User(UserMixin, BaseModel):
                 .where(UserTarget.user == self)
                 .order_by(UserTarget.added_at.desc()))
 
+    def stream(self):
+        tracks =[]
+        targets = self.targets()
+        for target in targets:
+            tracks.extend(target.get_tracks())
+        return tracks
+
     @classmethod
     def create_user(cls, username, email, password, admin=False):
         try:
@@ -46,10 +55,14 @@ class User(UserMixin, BaseModel):
 
 # each unique soundcloud user
 # targets are many-to-many with users
+# 
 class Target(BaseModel):
     sc_id = BigIntegerField(unique=True)
     permalink = CharField()
     added_at = DateTimeField(default=datetime.datetime.now)
+
+    def get_tracks(self):
+        return Track.select().where(Track.target == self).order_by(Track.liked_at)
 
     @classmethod
     def create_target(cls, sc_id, permalink):
@@ -61,6 +74,8 @@ class Target(BaseModel):
 
 
 # models a many-to-many between targets and users
+# creating a new relationship checks to make sure
+# one didn't already exist
 class UserTarget(BaseModel):
     user = ForeignKeyField(User)
     target = ForeignKeyField(Target)
@@ -85,6 +100,9 @@ class UserTarget(BaseModel):
 
 # a track liked by one of the targets
 # tracks are many-to-one with target
+# they are not unique, because multiple targets could
+# like the same song, but add them at different times
+# [todo] maybe they should be unique at some point
 class Track(BaseModel):
     sc_id = BigIntegerField(unique=False)
     liked_at = DateTimeField(default=datetime.datetime.now)

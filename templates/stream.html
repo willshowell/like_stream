@@ -1,29 +1,14 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<!--
-the controller should return a list of songs in order
-this will render the soundcloud widget for each song
--->
-<div class="row">
-	<div class="grid-25"><img height="150" src="https://i1.sndcdn.com/avatars-000026702598-pec9cx-t500x500.jpg"></div>
-	<iframe class="grid-75" height="150" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/131678915&amp;auto_play=false&amp;hide_related=true&amp;show_comments=false&amp;show_user=true&amp;show_reposts=false&amp;visual=true"></iframe>
 
-	
+{% for track in stream %}
+<div class="row">
+	<div class="grid-25" style="height: 150px; width: 150px; background-size: 100%;background-image: url({{ images[track.target.sc_id] }});"><a href="http://soundcloud.com/{{ track.target.permalink }}"><span class="sc-style">{{ track.target.permalink }}'s like</span></a></div>
+	<iframe class="grid-75" height="150" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/{{ track.sc_id }}&amp;auto_play=false&amp;hide_related=true&amp;show_comments=false&amp;show_user=true&amp;show_reposts=false&amp;visual=true"></iframe>
 </div>
 <br>
-
-<div class="row">
-	<div class="grid-25"><img height="150" src="https://i1.sndcdn.com/avatars-000028140695-kyxptq-t500x500.jpg"></div>
-	<iframe class="grid-75" height="150" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/231226107&amp;auto_play=false&amp;hide_related=true&amp;show_comments=false&amp;show_user=true&amp;show_reposts=false&amp;visual=true"></iframe>
-</div>
-<br>
-
-<div class="row">
-	<div class="grid-25"><img height="150" src="https://i1.sndcdn.com/avatars-000097056058-s07lh7-t500x500.jpg"></div>
-	<iframe class="grid-75" height="150" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/228511715&amp;auto_play=false&amp;hide_related=true&amp;show_comments=false&amp;show_user=true&amp;show_reposts=false&amp;visual=true"></iframe>
-</div>
-
+{% endfor %}
 
 {% endblock %}
 

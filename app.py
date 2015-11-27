@@ -92,9 +92,14 @@ def register():
 @app.route('/stream')
 @login_required
 def stream():
-    #TODO Get an ordered list of all the tracks
-    #TODO Display them next to a picture of who liked them
-    return render_template('stream.html')
+    stream = current_user.stream()
+
+    target_image_dict = {}
+    for target in current_user.targets():
+        image_url = sch.get_user_image(target.sc_id)
+        target_image_dict[target.sc_id] = image_url
+
+    return render_template('stream.html', stream=stream, images=target_image_dict)
 
 @app.route('/profile', methods=('GET', 'POST'))
 @login_required
@@ -117,7 +122,7 @@ def profile():
                 sc_id=user_id,
                 permalink=permalink
             )
-            #TODO get and store this target's favorites
+            #TODO get, store, and datetime this target's favorites
             flash("This user is now being tracked.", "success")
         except ValueError:
             flash("This user is already being tracked.", "message")
@@ -134,8 +139,6 @@ def profile():
             flash("You are now following them.", "success")
         except ValueError:
             flash("You are already following this user.", "error")
-
-    # Check if any targets needed to be deleted
 
     return render_template('profile.html', 
                            new_target_form=new_target_form, 
@@ -159,6 +162,11 @@ def delete_target():
     except ValueError:
         flash("Error removing this user.", "error")
     return redirect(url_for('profile'))
+
+@app.route('/about')
+def help():
+    return render_template('help.html')
+
 
 if __name__ == '__main__':
     models.initialize()

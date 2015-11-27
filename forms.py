@@ -1,5 +1,5 @@
 from flask_wtf import Form
-from wtforms import StringField, PasswordField, SubmitField
+from wtforms import StringField, PasswordField
 from wtforms.validators import (DataRequired, Length, EqualTo, 
                                 Email, Regexp, ValidationError)
 
@@ -64,6 +64,3 @@ class TargetForm(Form):
         validators=[
             DataRequired()
         ])
-
-class DeleteTargetForm(Form):
-    pass
