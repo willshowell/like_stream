@@ -4,7 +4,7 @@ from flask.ext.login import (LoginManager, login_user, current_user,
                              login_required, logout_user)
 from secrets import APP_SECRET_KEY
 
-import soundcloud_helper as sch
+import soundcloud_helper as sch, worker
 
 import models, forms
 
@@ -92,7 +92,7 @@ def register():
 @app.route('/stream')
 @login_required
 def stream():
-    stream = current_user.stream()
+    stream = current_user.stream(0,15)
 
     target_image_dict = {}
     for target in current_user.targets():
@@ -118,11 +118,11 @@ def profile():
 
         # Create a target from that id if it doesn't already exist
         try:
-            models.Target.create_target(
+            new_target = models.Target.create_target(
                 sc_id=user_id,
                 permalink=permalink
             )
-            #TODO get, store, and datetime this target's favorites
+            worker.update_target_in_db(new_target)
             flash("This user is now being tracked.", "success")
         except ValueError:
             flash("This user is already being tracked.", "message")
