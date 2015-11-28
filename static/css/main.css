@@ -191,9 +191,6 @@ button {
 .small-text {
   border-right: 5px;
 }
-.no-image {
-  background-image: linear-gradient(135deg,#70929c,#8e8485);
-}
 .sc-style {
   background: rgba(0,0,0,.8);
   color: #fff;
