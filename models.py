@@ -33,12 +33,13 @@ class User(UserMixin, BaseModel):
                 .where(UserTarget.user == self)
                 .order_by(UserTarget.added_at.desc()))
 
-    def stream(self):
+    def stream(self, begin, end):
         tracks =[]
         targets = self.targets()
         for target in targets:
             tracks.extend(target.get_tracks())
-        return tracks
+        tracks.sort(key= lambda track: track.liked_at, reverse=True)
+        return tracks[begin:end]
 
     @classmethod
     def create_user(cls, username, email, password, admin=False):
@@ -60,15 +61,19 @@ class Target(BaseModel):
     sc_id = BigIntegerField(unique=True)
     permalink = CharField()
     added_at = DateTimeField(default=datetime.datetime.now)
+    updated_at = DateTimeField(default=datetime.datetime.now)
 
     def get_tracks(self):
-        return Track.select().where(Track.target == self).order_by(Track.liked_at)
+        return Track.select().where(Track.target == self).order_by(-Track.liked_at)
+
+    def update_time(self):
+        self.updated_at = datetime.datetime.now()
 
     @classmethod
     def create_target(cls, sc_id, permalink):
         try:
             with database.transaction():
-                cls.create(sc_id=sc_id, permalink=permalink)
+                return cls.create(sc_id=sc_id, permalink=permalink)
         except IntegrityError:
             raise ValueError("Target already exists")
 
