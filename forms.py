@@ -26,13 +26,6 @@ class RegisterForm(Form):
             ),
             name_exists
         ])
-    email = StringField(
-        'Email',
-        validators=[
-            DataRequired(),
-            Email(),
-            email_exists
-        ])
     password = PasswordField(
         'Password',
         validators=[
@@ -46,11 +39,10 @@ class RegisterForm(Form):
         )
 
 class LoginForm(Form):
-    email = StringField(
-        'Email', 
+    username = StringField(
+        'Username', 
         validators=[
             DataRequired(),
-            Email()
         ])
     password = PasswordField(
         'Password',

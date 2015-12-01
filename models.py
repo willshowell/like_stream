@@ -21,7 +21,6 @@ class BaseModel(Model):
 # users are many-to-many with targets
 class User(UserMixin, BaseModel):
     username = CharField(unique=True)
-    email = CharField(unique=True)
     password = CharField(max_length=100)
     joined_at = DateTimeField(default=datetime.datetime.now)
     is_admin = BooleanField(default=False)
@@ -42,12 +41,11 @@ class User(UserMixin, BaseModel):
         return tracks[begin:end]
 
     @classmethod
-    def create_user(cls, username, email, password, admin=False):
+    def create_user(cls, username, password, admin=False):
         try:
             with database.transaction():
-                cls.create(
+                return cls.create(
                     username=username,
-                    email=email,
                     password=generate_password_hash(password),
                     is_admin=admin)
         except IntegrityError:

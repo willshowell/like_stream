@@ -51,20 +51,20 @@ def index():
 @app.route('/login', methods=('GET', 'POST'))
 def login():
     if current_user.is_authenticated:
-        flash("You've been logged out.", "success")
         logout_user()
+        flash("You've been logged out.", "success")
     form = forms.LoginForm()
     if form.validate_on_submit():
         try:
-            user = models.User.get(models.User.email == form.email.data)
+            user = models.User.get(models.User.username == form.username.data)
         except models.DoesNotExist:
-            flash("Your email and password do not match.", "error")
+            flash("Your username and password do not match.", "error")
         else:
             if check_password_hash(user.password, form.password.data):
                 login_user(user)
                 return redirect(url_for('index'))
             else:
-                flash("Your email and password do not match.", "error")
+                flash("Your username and password do not match.", "error")
     return render_template('login.html', form=form)
 
 @app.route('/logout')
@@ -81,18 +81,18 @@ def register():
         logout_user()
     form = forms.RegisterForm()
     if form.validate_on_submit():
-        models.User.create_user(
+        user = models.User.create_user(
             username = form.username.data,
-            email = form.email.data,
             password = form.password.data
         )
-        return redirect(url_for('stream'))
+        login_user(user)
+        return redirect(url_for('index'))
     return render_template('register.html', form=form)
 
 @app.route('/stream')
 @login_required
 def stream():
-    stream = current_user.stream(0,15)
+    stream = current_user.stream(0,50)
 
     target_image_dict = {}
     for target in current_user.targets():
@@ -173,7 +173,6 @@ if __name__ == '__main__':
     try:
         models.User.create_user(
             username='will',
-            email='will.s.howell@gmail.com',
             password='password',
             admin=True
         )
