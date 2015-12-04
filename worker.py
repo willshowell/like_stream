@@ -34,16 +34,12 @@ def update_target_in_db(target, amount=5):
 
 
 if __name__ == '__main__':
-	while True:
-		
-		models.database.connect()
-		targets = models.Target.select()
-		for target in targets:
-			update_target_in_db(target)
-			target.update_time()
-			target.save()
+	
+	models.database.connect()
+	targets = models.Target.select()
+	for target in targets:
+		update_target_in_db(target)
+		target.update_time()
+		target.save()
 
-		models.database.close()
-
-		#wait some time
-		time.sleep(1000)
+	models.database.close()
