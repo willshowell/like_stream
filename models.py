@@ -1,4 +1,4 @@
-import datetime
+import datetime, os
 
 from flask.ext.bcrypt import generate_password_hash
 from flask.ext.login import UserMixin
@@ -6,10 +6,12 @@ from peewee import *
 from random import shuffle
 
 
-DATABASE = 'like_stream.db'
+'''DATABASE = 'like_stream.db'
 
 # generate a peewee database instance
-database = SqliteDatabase(DATABASE)
+database = SqliteDatabase(DATABASE) '''
+
+database = Proxy()
 
 # base model class that all others will extend
 class BaseModel(Model):
@@ -114,6 +116,20 @@ class Track(BaseModel):
         related_name='tracks'
     )
 
+
+# set up the database proxy based on the environment
+# if running locally, use sqlite
+# if running on heroku, use postgesql
+if 'HEROKU' in os.environ:
+    import urllib.parse, psycopg2
+    urllib.parse.uses_netloc.append('postgres')
+    url = urllib.parse.urlparse(os.environ["DATABASE_URL"])
+    db = PostgresqlDatabase(database=url.path[1:], user=url.username, 
+        password=url.password, host=url.hostname, port=url.port)
+    database.initialize(db)
+else:
+    db = SqliteDatabase('like_stream.db')
+    database.initialize(db)
 
 def initialize():
     database.connect()
