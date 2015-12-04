@@ -46,4 +46,4 @@ if __name__ == '__main__':
 		models.database.close()
 
 		#wait some time
-		time.sleep(20)
+		time.sleep(1000)

@@ -139,7 +139,7 @@ def profile():
             flash("You are now following them.", "success")
         except ValueError:
             flash("You are already following this user.", "error")
-
+            
     return render_template('profile.html', 
                            new_target_form=new_target_form, 
                            targets=targets)
