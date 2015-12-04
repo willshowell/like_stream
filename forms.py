@@ -52,7 +52,7 @@ class LoginForm(Form):
 
 class TargetForm(Form):
     sc_user_profile = StringField(
-        'SoundCloud Profile Permalink',
+        'SoundCloud Profile URL',
         validators=[
             DataRequired()
         ])
