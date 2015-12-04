@@ -1,11 +1,14 @@
 # SoundCloud Like Stream
 
+Check it out at [live](http://soundcloudlikes.herokuapp.com)!
 
-###TODO
-- Configure worker process
+This site was built as an experiment in using the SoundCloud public API along 
+with Flask.
+
+### TODO
+- Add auto-play on stream
 - Add infinite scrolling
 - Add tests
 - Reformat profile page
-- Add auto-play on stream
-- Tweak stream CSS
-- Make worker process more robust
+- Make stream CSS prettier
+- Make worker process more robust for unlikes
