@@ -2,9 +2,8 @@
 {% from 'macros.html' import render_field %}
 
 {% block content %}
-<div class="row">
-  Follow a New User:
-  <form method="POST" action="" class="form">
+<div class="row" style="width: 75%; margin: 0 auto;">
+  <form method="POST" action="" class="form center">
       {% for field in new_target_form %}
         {{ render_field(field) }}
       {% endfor %}
@@ -15,24 +14,23 @@
 <br><br>
 
 <div class="row">
-  Current SoundCloud Users You are Following:
   <br><br>
-  <table>
+  <table style="width: 75%; margin: 0 auto;">
     <tr>
       <th>Permalink</th>
       <th>Remove</th>
     </tr>
-      {% for target in targets %}
-        <tr>
-          <td>{{ target.permalink }}</td>
-          <th>
-            <form method="POST" action="/delete_target" class="delete">
-             <input type="hidden" value="{{ target.sc_id }}" name="target" />
-             <button class="delete" type="submit">X</button>
-            </form>
-          </th>
-        </tr>
-      {% endfor %}
+    {% for target in targets %}
+      <tr>
+        <td>{{ target.permalink }}</td>
+        <td>
+          <form method="POST" action="/delete_target" class="delete">
+           <input type="hidden" value="{{ target.sc_id }}" name="target" />
+           <button class="delete" type="submit">X</button>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
   </table>
 </div>
 {% endblock %}

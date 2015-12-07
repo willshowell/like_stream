@@ -185,6 +185,9 @@ button {
 .right {
   text-align: right;
 }
+.center {
+  text-align: center;
+}
 .separate {
   border-bottom: solid thin #F50;
 }

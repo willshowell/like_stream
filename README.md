@@ -1,6 +1,6 @@
 # SoundCloud Like Stream
 
-Check it out at [live](http://soundcloudlikes.herokuapp.com)!
+Check it out [live](http://soundcloudlikes.herokuapp.com)!
 
 This site was built as an experiment in using the SoundCloud public API along 
 with Flask.
@@ -12,3 +12,5 @@ with Flask.
 - Reformat profile page
 - Make stream CSS prettier
 - Make worker process more robust for unlikes
+- Implement search
+- Add 404 page
