@@ -113,7 +113,7 @@ def profile():
         except ValueError:
             flash("This user doesn't seem to exist. Try a different name.", "error")
             return render_template('profile.html',
-                                   form=new_target_form,
+                                   new_target_form=new_target_form,
                                    targets=targets)
 
         # Create a target from that id if it doesn't already exist
