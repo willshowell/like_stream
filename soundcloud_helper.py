@@ -6,6 +6,9 @@ sc_client = soundcloud.Client(client_id=SOUNDCLOUD_CLIENT_ID)
 
 def resolve_user_id(user_url):
     '''Converts a SoundCloud url to a user id'''
+    # Convert to URL if not one already
+    if 'soundcloud.com' not in user_url:
+        user_url = "https://soundcloud.com/" + user_url
     try:
         user = sc_client.get('/resolve', url=user_url)
     except HTTPError:
