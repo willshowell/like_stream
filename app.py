@@ -92,7 +92,7 @@ def register():
 @app.route('/stream')
 @login_required
 def stream():
-    stream = current_user.stream(0,50)
+    stream = current_user.stream(0,15)
 
     target_image_dict = {}
     for target in current_user.targets():
