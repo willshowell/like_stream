@@ -1,4 +1,5 @@
-from flask import Flask, g, render_template, redirect, url_for, flash, request
+from flask import (Flask, g, render_template, redirect, url_for, flash, 
+                   request, jsonify)
 from flask.ext.bcrypt import check_password_hash
 from flask.ext.login import (LoginManager, login_user, current_user,
                              login_required, logout_user)
@@ -166,6 +167,27 @@ def delete_target():
 @app.route('/about')
 def help():
     return render_template('help.html')
+
+@app.route('/_more')
+def more():
+    start = request.args.get('start', 0, type=int)
+    end = request.args.get('end', 0, type=int)
+    
+    stream = current_user.stream(start,end)
+    
+    target_image_dict = {}
+    for target in current_user.targets():
+        image_url = sch.get_user_image(target.sc_id)
+        target_image_dict[target.sc_id] = image_url
+
+    return jsonify(tracks=[track.serialize() for track in stream],
+                   images=target_image_dict
+                   )
+
+
+@app.route('/test')
+def test():
+    return render_template('test.html')
 
 
 if __name__ == '__main__':
