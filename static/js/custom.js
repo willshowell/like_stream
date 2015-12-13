@@ -4,7 +4,7 @@ $(function() {
     		start: $('input[name="begin"]').val(),
     		end: $('input[name="end"]').val()
   		}, function(data) {
-    		$("#result").text(JSON.stringify(data.tracks));
+    		$("#result").append($('<li>').text(JSON.stringify(data.tracks)));
   		});
   		return true;
 	});
