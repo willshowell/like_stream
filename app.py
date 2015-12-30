@@ -184,7 +184,6 @@ def more():
                    images=target_image_dict
                    )
 
-
 @app.route('/test')
 def test():
     return render_template('test.html')
