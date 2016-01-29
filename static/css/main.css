@@ -109,12 +109,13 @@ input:focus {
 }
 button {
   width: 100%;
+  border: 1px solid #f50;
   padding: 10px 0;
   margin: 10px 0;
   text-align: center;
   background: #F50;
-  color: #fff;
-  border: #F50;
+  background-color: #fff;
+  color: #f50;
   border-radius: 4px;
 }
 .delete {
@@ -205,6 +206,11 @@ button {
   font-weight: 100;
   font-size: 0.8em;
   -webkit-font-smoothing: antialiased;
+}
+
+.track {
+  height: 75;
+  margin-bottom: 20px;
 }
 
 

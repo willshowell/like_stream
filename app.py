@@ -93,14 +93,14 @@ def register():
 @app.route('/stream')
 @login_required
 def stream():
-    stream = current_user.stream(0,5)
+    '''stream = current_user.stream(0,2)
 
     target_image_dict = {}
     for target in current_user.targets():
         image_url = sch.get_user_image(target.sc_id)
         target_image_dict[target.sc_id] = image_url
-
-    return render_template('stream.html', stream=stream, images=target_image_dict)
+'''
+    return render_template('stream.html')#, stream=stream, images=target_image_dict)
 
 @app.route('/profile', methods=('GET', 'POST'))
 @login_required
