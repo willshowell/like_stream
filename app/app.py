@@ -21,7 +21,9 @@ app.secret_key = APP_SECRET_KEY
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-
+#==========================
+# USER AUTHENTICATION
+#==========================
 @login_manager.user_loader
 def load_user(user_id):
     try:
@@ -33,6 +35,9 @@ def load_user(user_id):
 def unauthorized():
     return redirect(url_for('login'))
 
+#==========================
+# DATABASE MANAGEMENT
+#==========================
 @app.before_request
 def before_request():
     g.db = models.database
@@ -44,6 +49,11 @@ def after_request(response):
     g.db.close()
     return response
 
+#==========================
+# ROUTES
+#==========================
+
+# Sends the user to login or stream page depending on their log in status
 @app.route('/')
 def index():
     if current_user.is_authenticated:
@@ -51,6 +61,7 @@ def index():
     else:
         return redirect(url_for('login'))
 
+# Logs the user iN
 @app.route('/login', methods=('GET', 'POST'))
 def login():
     if current_user.is_authenticated:
@@ -70,6 +81,7 @@ def login():
                 flash("Your username and password do not match.", "error")
     return render_template('login.html', form=form)
 
+# Logs the user out and sends them to the index page
 @app.route('/logout')
 @login_required
 def logout():
@@ -77,6 +89,7 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
+# Returns the registration page
 @app.route('/register', methods=('GET', 'POST'))
 def register():
     if current_user.is_authenticated:
@@ -92,18 +105,13 @@ def register():
         return redirect(url_for('index'))
     return render_template('register.html', form=form)
 
+# Returns the stream page that then loads tracks via AJAX
 @app.route('/stream')
 @login_required
 def stream():
-    '''stream = current_user.stream(0,2)
+    return render_template('stream.html')
 
-    target_image_dict = {}
-    for target in current_user.targets():
-        image_url = sch.get_user_image(target.sc_id)
-        target_image_dict[target.sc_id] = image_url
-'''
-    return render_template('stream.html')#, stream=stream, images=target_image_dict)
-
+# Returns the profile page for the current user
 @app.route('/profile', methods=('GET', 'POST'))
 @login_required
 def profile():
@@ -147,6 +155,7 @@ def profile():
                            new_target_form=new_target_form, 
                            targets=targets)
 
+# Unfollows the target from the user's profile
 @app.route('/delete_target', methods=['GET','POST'])
 @login_required
 def delete_target():
@@ -166,10 +175,12 @@ def delete_target():
         flash("Error removing this user.", "error")
     return redirect(url_for('profile'))
 
+# Returns the static help page
 @app.route('/about')
 def help():
     return render_template('help.html')
 
+# Return JSON full of track info, tracks from 'start' to 'end'
 @app.route('/_more')
 def more():
     start = request.args.get('start', 0, type=int)
@@ -185,12 +196,10 @@ def more():
     return jsonify(tracks=[track.serialize() for track in stream],
                    images=target_image_dict
                    )
-
-@app.route('/test')
-def test():
-    return render_template('test.html')
-
-
+    
+#==========================
+# START APP
+#==========================
 if __name__ == '__main__':
     models.initialize()
     try:
