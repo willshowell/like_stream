@@ -61,7 +61,7 @@ def index():
     else:
         return redirect(url_for('login'))
 
-# Logs the user iN
+# Logs the user in
 @app.route('/login', methods=('GET', 'POST'))
 def login():
     if current_user.is_authenticated:
