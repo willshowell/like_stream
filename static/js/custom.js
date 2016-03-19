@@ -6,6 +6,12 @@ var count = 5;
 /* Load more tracks */
 function getMore(loadCount, callback) {
   
+  /* Unbind load-more event from previous last track */
+  if (totalLoaded > 0) {
+    var last_widget = SC.Widget('frame-'+(totalLoaded-1));
+    last_widget.unbind(SC.Widget.Events.PLAY);
+  }
+  
   /* Send AJAX request */
   $.getJSON($SCRIPT_ROOT + '/_more', {
     start: totalLoaded,
@@ -17,12 +23,8 @@ function getMore(loadCount, callback) {
       $('#end-stream').show();
     }
     
-    console.log(data);
-    
     /* Iterate through each track in the response */
     $.each( data.tracks, function( i, item ) {
-      
-      console.log(item);
       
       /* Generate a widget iframe */
       var frame = widgetFrameTemplate.replace("{widget-source}", widgetSource+urlOptions);
@@ -39,18 +41,23 @@ function getMore(loadCount, callback) {
       /* Add row to html */
       $('#tracks').append(row);
 
-      /* Set up autoplay when previous widget finishes (except for first) */
-      if (totalLoaded > 0)
-      {
+      /* Set up autoplay on this track when previous track finishes (except for first) */
+      if (totalLoaded > 0) {
         var prev_widget = SC.Widget('frame-'+(totalLoaded-1));
         var this_widget = SC.Widget('frame-'+(totalLoaded));
         prev_widget.bind(SC.Widget.Events.FINISH, function() {
           this_widget.play();
-        });        
-      }      
+        });     
+      }
       
       /* Increment counter */
       totalLoaded += 1;
+    });
+    
+    /* Bind load-more event to starting the last track */
+    var new_last_widget = SC.Widget('frame-'+(totalLoaded-1));
+    new_last_widget.bind(SC.Widget.Events.PLAY, function() {
+      getMore(count);
     });
     
     /* Run callback if necessary */

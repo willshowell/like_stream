@@ -10,13 +10,13 @@ var widgetSource = "https://w.soundcloud.com/player/?" +
                     
 var urlOptions = "&amp;auto_play=false&amp;hide_related=true&amp;" +
                  "show_comments=false&amp;show_user=true&amp;" +
-                 "show_reposts=false&amp;visual=true";
+                 "show_reposts=false&amp;visual=true&amp;buying=false";
                   
                   
 /* Template for each track row */
 var track_row = ' <div class="row"> \
                     <div class="grid-25 track" style="margin-right: 5px; height: 150px; width: 150px; background-size: 100%;background-image: url({image});"> \
-                      <a href="http://soundcloud.com/{track-target-permalink}"><span class="sc-style">{track-target-permalink}\'s like</span></a> \
+                      <a target="_blank" href="http://soundcloud.com/{track-target-permalink}"><span class="sc-style">{track-target-permalink}\'s like</span></a> \
                     </div> \
                     {iframe} \
                   </div> \
