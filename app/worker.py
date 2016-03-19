@@ -25,11 +25,20 @@ def update_target_in_db(target, amount=5):
 		return
 
 	# Just take the new ones and save them in order
-	# [todo] put their times split since the last update
-	for track in diff:
+	for index, track in enumerate(diff):
+		
+		old_time = target.updated_at
+		new_time = datetime.datetime.now()
+		
+		split = (index+1)/len(diff)
+		split_time = old_time + split * (new_time - old_time)
+		
+		print("Adding {} at {}".format(track, split_time))
+		
 		models.Track.create(
 			sc_id = track,
-			target = target
+			target = target,
+			liked_at = split_time
 		)
 
 

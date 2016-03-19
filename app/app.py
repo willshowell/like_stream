@@ -118,6 +118,7 @@ def profile():
     targets = current_user.targets()
     new_target_form = forms.TargetForm()
     if new_target_form.validate_on_submit():
+
         # Try to resolve the username
         try:
             user_id, permalink=sch.resolve_user_id(new_target_form.sc_user_profile.data)
@@ -150,7 +151,7 @@ def profile():
             flash("You are now following them.", "success")
         except ValueError:
             flash("You are already following this user.", "error")
-            
+
     return render_template('profile.html', 
                            new_target_form=new_target_form, 
                            targets=targets)
