@@ -13,7 +13,9 @@ DEBUG = True
 HOST = '127.0.0.1'
 PORT = 5000
 
-app = Flask(__name__)
+app = Flask(__name__, 
+            template_folder='../templates', 
+            static_folder='../static')
 app.secret_key = APP_SECRET_KEY
 
 login_manager = LoginManager()
