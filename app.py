@@ -181,6 +181,7 @@ def help():
 
 # Return JSON full of track info, tracks from 'start' to 'end'
 @app.route('/_more')
+@login_required
 def more():
     start = request.args.get('start', 0, type=int)
     end = request.args.get('end', 0, type=int)
@@ -195,6 +196,21 @@ def more():
     return jsonify(tracks=[track.serialize() for track in stream],
                    images=target_image_dict
                    )
+    
+# Log the user in as the 'example' account
+@app.route('/example')
+def example():
+    if current_user.is_authenticated:
+        logout_user()
+        flash("You've been logged out.", "success")
+    try:
+        user = models.User.get(models.User.username == 'example')
+    except models.DoesNotExist:
+        flash("Error in finding the 'example' account.", "error")
+    else:
+        login_user(user)
+    return redirect(url_for('index'))
+
     
 #==========================
 # START APP
