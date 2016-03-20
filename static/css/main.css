@@ -114,8 +114,8 @@ button {
   margin: 10px 0;
   text-align: center;
   background: #F50;
-  background-color: #fff;
-  color: #f50;
+  color: #fff;
+  border: #f50;
   border-radius: 4px;
 }
 .delete {
