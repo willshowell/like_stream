@@ -1,1 +1,1 @@
-web: gunicorn $APP_PATH:app --log-file=-
+web: gunicorn app:app --log-file=-
