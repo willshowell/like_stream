@@ -4,6 +4,7 @@ from flask.ext.bcrypt import generate_password_hash
 from flask.ext.login import UserMixin
 from peewee import *
 from random import shuffle
+import json
 
 
 '''DATABASE = 'like_stream.db'
@@ -116,6 +117,12 @@ class Track(BaseModel):
         related_name='tracks'
     )
 
+    def serialize(self):
+        return {
+            'sc_id': self.sc_id,
+            'target_id': self.target.sc_id,
+            'target_permalink': self.target.permalink,
+        }
 
 # set up the database proxy based on the environment
 # if running locally, use sqlite

@@ -2,18 +2,19 @@
 
 {% block content %}
 
-{% if stream %}
-	{% for track in stream %}
-	<div class="row">
-		<div class="grid-25" style="margin-right: 5px; height: 150px; width: 150px; background-size: 100%;background-image: url({{ images[track.target.sc_id] }});"><a href="http://soundcloud.com/{{ track.target.permalink }}"><span class="sc-style">{{ track.target.permalink }}'s like</span></a></div>
-		<iframe class="grid-75" height="150" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/{{ track.sc_id }}&amp;auto_play=false&amp;hide_related=true&amp;show_comments=false&amp;show_user=true&amp;show_reposts=false&amp;visual=true"></iframe>
+	<div id="tracks">
+		
 	</div>
-	<br>
-	{% endfor %}
-{% else %}
-<p>No tracks yet. Go to you <a href="{{ url_for('profile') }}">profile</a> to start following users!</p>
-{% endif %}
 
+	<!-- Messages -->
+	<p id="no-tracks" style="display: none;">No tracks yet. Go to your <a href="{{ url_for('profile') }}">profile</a> to start following users!</p>
+	<p id="end-stream" style="display: none;">You've reached the end of your stream!</p>
+
+	<button id="load-more" style="display: none;">Load More</button>
+	
+	<script src="https://w.soundcloud.com/player/api.js"></script>
+	<script src="/static/js/widgets.js"></script>
+	<script src="/static/js/custom.js"></script>
 
 {% endblock %}
 

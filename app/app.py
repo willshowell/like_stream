@@ -1,4 +1,5 @@
-from flask import Flask, g, render_template, redirect, url_for, flash, request
+from flask import (Flask, g, render_template, redirect, url_for, flash, 
+                   request, jsonify)
 from flask.ext.bcrypt import check_password_hash
 from flask.ext.login import (LoginManager, login_user, current_user,
                              login_required, logout_user)
@@ -12,13 +13,17 @@ DEBUG = True
 HOST = '127.0.0.1'
 PORT = 5000
 
-app = Flask(__name__)
+app = Flask(__name__, 
+            template_folder='../templates', 
+            static_folder='../static')
 app.secret_key = APP_SECRET_KEY
 
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-
+#==========================
+# USER AUTHENTICATION
+#==========================
 @login_manager.user_loader
 def load_user(user_id):
     try:
@@ -30,6 +35,9 @@ def load_user(user_id):
 def unauthorized():
     return redirect(url_for('login'))
 
+#==========================
+# DATABASE MANAGEMENT
+#==========================
 @app.before_request
 def before_request():
     g.db = models.database
@@ -41,6 +49,11 @@ def after_request(response):
     g.db.close()
     return response
 
+#==========================
+# ROUTES
+#==========================
+
+# Sends the user to login or stream page depending on their log in status
 @app.route('/')
 def index():
     if current_user.is_authenticated:
@@ -48,6 +61,7 @@ def index():
     else:
         return redirect(url_for('login'))
 
+# Logs the user in
 @app.route('/login', methods=('GET', 'POST'))
 def login():
     if current_user.is_authenticated:
@@ -67,6 +81,7 @@ def login():
                 flash("Your username and password do not match.", "error")
     return render_template('login.html', form=form)
 
+# Logs the user out and sends them to the index page
 @app.route('/logout')
 @login_required
 def logout():
@@ -74,6 +89,7 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
+# Returns the registration page
 @app.route('/register', methods=('GET', 'POST'))
 def register():
     if current_user.is_authenticated:
@@ -89,24 +105,20 @@ def register():
         return redirect(url_for('index'))
     return render_template('register.html', form=form)
 
+# Returns the stream page that then loads tracks via AJAX
 @app.route('/stream')
 @login_required
 def stream():
-    stream = current_user.stream(0,15)
+    return render_template('stream.html')
 
-    target_image_dict = {}
-    for target in current_user.targets():
-        image_url = sch.get_user_image(target.sc_id)
-        target_image_dict[target.sc_id] = image_url
-
-    return render_template('stream.html', stream=stream, images=target_image_dict)
-
+# Returns the profile page for the current user
 @app.route('/profile', methods=('GET', 'POST'))
 @login_required
 def profile():
     targets = current_user.targets()
     new_target_form = forms.TargetForm()
     if new_target_form.validate_on_submit():
+
         # Try to resolve the username
         try:
             user_id, permalink=sch.resolve_user_id(new_target_form.sc_user_profile.data)
@@ -139,11 +151,12 @@ def profile():
             flash("You are now following them.", "success")
         except ValueError:
             flash("You are already following this user.", "error")
-            
+
     return render_template('profile.html', 
                            new_target_form=new_target_form, 
                            targets=targets)
 
+# Unfollows the target from the user's profile
 @app.route('/delete_target', methods=['GET','POST'])
 @login_required
 def delete_target():
@@ -163,11 +176,31 @@ def delete_target():
         flash("Error removing this user.", "error")
     return redirect(url_for('profile'))
 
+# Returns the static help page
 @app.route('/about')
 def help():
     return render_template('help.html')
 
+# Return JSON full of track info, tracks from 'start' to 'end'
+@app.route('/_more')
+def more():
+    start = request.args.get('start', 0, type=int)
+    end = request.args.get('end', 0, type=int)
+    
+    stream = current_user.stream(start,end)
+    
+    target_image_dict = {}
+    for target in current_user.targets():
+        image_url = sch.get_user_image(target.sc_id)
+        target_image_dict[target.sc_id] = image_url
 
+    return jsonify(tracks=[track.serialize() for track in stream],
+                   images=target_image_dict
+                   )
+    
+#==========================
+# START APP
+#==========================
 if __name__ == '__main__':
     models.initialize()
     try:
