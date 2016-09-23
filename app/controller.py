@@ -1,20 +1,11 @@
-from flask import (Flask, g, render_template, redirect, url_for, flash, 
-                   request, jsonify)
+from flask import (Flask, g, redirect, render_template, url_for, flash, request, jsonify)
 from flask.ext.bcrypt import check_password_hash
 from flask.ext.login import (LoginManager, login_user, current_user,
                              login_required, logout_user)
-from secrets import APP_SECRET_KEY
 
 import soundcloud_helper as sch, worker
+from app import app, models, forms
 
-import models, forms
-
-DEBUG = True
-HOST = '127.0.0.1'
-PORT = 5000
-
-app = Flask(__name__)
-app.secret_key = APP_SECRET_KEY
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -47,9 +38,9 @@ def after_request(response):
     g.db.close()
     return response
 
-#==========================
+#=====================
 # ROUTES
-#==========================
+#=====================
 
 # Sends the user to login or stream page depending on their log in status
 @app.route('/')
@@ -210,19 +201,3 @@ def example():
     else:
         login_user(user)
     return redirect(url_for('index'))
-
-    
-#==========================
-# START APP
-#==========================
-if __name__ == '__main__':
-    models.initialize()
-    try:
-        models.User.create_user(
-            username='will',
-            password='password',
-            admin=True
-        )
-    except ValueError:
-        pass
-    app.run(debug=DEBUG, host=HOST, port=PORT)

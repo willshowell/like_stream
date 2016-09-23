@@ -1,32 +1,38 @@
 import datetime, os
-
 from flask.ext.bcrypt import generate_password_hash
 from flask.ext.login import UserMixin
 from peewee import *
 from random import shuffle
 import json
 
+from config import DATABASE
 
-'''DATABASE = 'like_stream.db'
 
-# generate a peewee database instance
-database = SqliteDatabase(DATABASE) '''
+# Initialize the database based on credentials from config file
+database = PostgresqlDatabase(DATABASE['NAME'], 
+                             user = DATABASE['USER'], 
+                             password = DATABASE['PASSWORD'],
+                             host = DATABASE['HOST'],
+                             port = DATABASE['PORT'])
 
-database = Proxy()
 
-# base model class that all others will extend
 class BaseModel(Model):
+    """A base model that will user the Postgresql database"""
     class Meta:
         database = database
 
 
-# each user of this app
-# users are many-to-many with targets
 class User(UserMixin, BaseModel):
-    username = CharField(unique=True)
-    password = CharField(max_length=100)
-    joined_at = DateTimeField(default=datetime.datetime.now)
-    is_admin = BooleanField(default=False)
+    """User model
+    
+    Each user has login credentials, admin status, and 
+    join time. Users have a many-to-many relationship
+    with targets.
+    """
+    username = CharField(unique = True)
+    password = CharField(max_length = 100)
+    joined_at = DateTimeField(default = datetime.datetime.now)
+    is_admin = BooleanField(default = False)
 
     def targets(self):
         return (Target
@@ -55,10 +61,15 @@ class User(UserMixin, BaseModel):
             raise ValueError("User already exists")
 
 
-# each unique soundcloud user
-# targets are many-to-many with users
-# 
 class Target(BaseModel):
+    """Target model
+
+    A target is a representation of a SoundCloud user.
+    The target's SoundCloud UID and SoundCloud permalink
+    are stored in the model, as well as date added and 
+    date updated. Targets have a many-to-many relationship
+    with users.
+    """
     sc_id = BigIntegerField(unique=True)
     permalink = CharField()
     added_at = DateTimeField(default=datetime.datetime.now)
@@ -79,10 +90,13 @@ class Target(BaseModel):
             raise ValueError("Target already exists")
 
 
-# models a many-to-many between targets and users
-# creating a new relationship checks to make sure
-# one didn't already exist
 class UserTarget(BaseModel):
+    """UserTarget relationship model
+
+    Users and targets have a many-to-many relationship
+    with eachother. The UserTarget model tracks those
+    relationships.
+    """
     user = ForeignKeyField(User)
     target = ForeignKeyField(Target)
     added_at = DateTimeField(default=datetime.datetime.now)
@@ -104,12 +118,17 @@ class UserTarget(BaseModel):
         except DoesNotExist:
             raise ValueError("Relationship did not exist")
 
-# a track liked by one of the targets
-# tracks are many-to-one with target
-# they are not unique, because multiple targets could
-# like the same song, but add them at different times
-# [todo] maybe they should be unique at some point
+
 class Track(BaseModel):
+    """Track model
+
+    A track is a representation of a SoundCloud track.
+    In addition to storing the SoundCloud UID of the 
+    track, it contains the time it was "liked" and the 
+    target, or SoundCloud user, who "liked" it. It is
+    not unique because multiple targets could like the
+    same track.
+    """
     sc_id = BigIntegerField(unique=False)
     liked_at = DateTimeField(default=datetime.datetime.now)
     target = ForeignKeyField(
@@ -124,21 +143,9 @@ class Track(BaseModel):
             'target_permalink': self.target.permalink,
         }
 
-# set up the database proxy based on the environment
-# if running locally, use sqlite
-# if running on heroku, use postgesql
-if 'HEROKU' in os.environ:
-    import urllib.parse, psycopg2
-    urllib.parse.uses_netloc.append('postgres')
-    url = urllib.parse.urlparse(os.environ["DATABASE_URL"])
-    db = PostgresqlDatabase(database=url.path[1:], user=url.username, 
-        password=url.password, host=url.hostname, port=url.port)
-    database.initialize(db)
-else:
-    db = SqliteDatabase('like_stream.db')
-    database.initialize(db)
 
-def initialize():
+def create_tables():
+    """Helper function to be run one time from the shell"""
     database.connect()
     database.create_tables([User, Target, UserTarget, Track], safe=True)
     database.close()

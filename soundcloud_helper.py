@@ -1,6 +1,6 @@
 import soundcloud
 from requests.exceptions import HTTPError
-from secrets import SOUNDCLOUD_CLIENT_ID
+from config import SOUNDCLOUD_CLIENT_ID
 
 sc_client = soundcloud.Client(client_id=SOUNDCLOUD_CLIENT_ID)
 

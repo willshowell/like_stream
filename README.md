@@ -12,3 +12,9 @@ with Flask.
 - Make worker process more robust for unlikes
 - Implement search
 - Add 404 page
+
+
+## Running
+```
+gunicorn -b 127.0.0.1:8000 app:app
+```

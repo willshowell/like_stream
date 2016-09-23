@@ -3,7 +3,7 @@ from wtforms import StringField, PasswordField
 from wtforms.validators import (DataRequired, Length, EqualTo, 
                                 Email, Regexp, ValidationError)
 
-from models import User
+from app.models import User
 
 def name_exists(form, field):
     if User.select().where(User.username == field.data).exists():
