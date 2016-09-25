@@ -23,7 +23,7 @@ $ pip install -r requirements.txt
 Create a local PostgreSQL databse:
 
 ```
-psql
+$ psql
 -> CREATE DATABASE dbname;
 -> CREATE USER username WITH PASSWORD password;
 -> GRANT ALL PRIVILEGES ON DATABASE dbname TO username;
@@ -32,7 +32,7 @@ psql
 
 Create a `config.py` file in the root directory:
 
-```
+```python
 DEBUG = True
 
 DATABASE = {
@@ -47,6 +47,9 @@ SECRET_KEY = '<some secret key>'
 
 SOUNDCLOUD_CLIENT_ID = '<your api key>'
 ```
+
+
+
 
 
 ## Running
@@ -77,3 +80,6 @@ the following to your crontab (`$ crontab -e`):
 ```
 */15 * * * * /full/path/to/env/bin/python /full/path/to/project/worker.py
 ```
+
+
+
