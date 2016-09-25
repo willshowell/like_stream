@@ -18,3 +18,10 @@ with Flask.
 ```
 gunicorn -b 127.0.0.1:8000 app:app
 ```
+
+Also set up a cron job to run the background worker process. In order to have it check for
+new updates every 15 minutes, add the following to your crontab:
+
+```
+*/15 * * * * /full/path/to/env/bin/python /full/path/to/project/worker.py
+```
