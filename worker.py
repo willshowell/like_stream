@@ -1,7 +1,7 @@
 import time, datetime
-import soundcloud_helper as sch 
-from app import models
-from config import DEBUG
+from helpers import soundcloud as sch 
+import app
+import config
 
 def update_target_in_db(target, amount=5):
     """Update Target
@@ -12,7 +12,7 @@ def update_target_in_db(target, amount=5):
     the target has liked, and  the difference is
     added to the list of likes for the target.
     """
-    if DEBUG:
+    if config.DEBUG:
         print("Updating: {}, id={}".format(target.permalink, target.sc_id))
         print("Last updated at: {}".format(target.updated_at))
 
@@ -30,7 +30,7 @@ def update_target_in_db(target, amount=5):
     #   diff = [8, 7]
     diff = [item for item in new_faves if item not in prev_faves]
     diff.reverse()
-    if DEBUG:
+    if config.DEBUG:
         print("Need to add {}.".format(diff))
 
     # Track `liked_at` times are distributed evenly
@@ -43,10 +43,10 @@ def update_target_in_db(target, amount=5):
         split = (index+1)/len(diff)
         split_time = old_time + split * (new_time - old_time)
         
-        if DEBUG:
+        if config.DEBUG:
             print("Adding {} at {}".format(track, split_time))
         
-        models.Track.create(
+        app.models.Track.create(
             sc_id = track,
             target = target,
             liked_at = split_time)
@@ -58,11 +58,11 @@ def update_target_in_db(target, amount=5):
 # Iterates through every target stored in the
 # database and updates it.
 if __name__ == '__main__':
-    models.database.connect()
-    targets = models.Target.select()
+    app.models.database.connect()
+    targets = app.models.Target.select()
     for target in targets:
         update_target_in_db(target)
         target.update_time()
         target.save()
 
-    models.database.close()
+    app.models.database.close()

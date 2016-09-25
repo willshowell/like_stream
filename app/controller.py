@@ -3,7 +3,8 @@ from flask.ext.bcrypt import check_password_hash
 from flask.ext.login import (LoginManager, login_user, current_user,
                              login_required, logout_user)
 
-import soundcloud_helper as sch, worker
+from helpers import soundcloud as sch
+import worker
 from app import app, models, forms
 
 

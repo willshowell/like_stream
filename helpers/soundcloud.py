@@ -1,8 +1,8 @@
 import soundcloud
 from requests.exceptions import HTTPError
-from config import SOUNDCLOUD_CLIENT_ID
+import config 
 
-sc_client = soundcloud.Client(client_id=SOUNDCLOUD_CLIENT_ID)
+sc_client = soundcloud.Client(client_id=config.SOUNDCLOUD_CLIENT_ID)
 
 def resolve_user_id(user_url):
     '''Converts a SoundCloud url to a user id'''
