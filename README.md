@@ -1,26 +1,78 @@
 # SoundCloud Like Stream
 
-Check it out [live](http://soundcloudlikes.herokuapp.com)!
+Check it out [live](http://soundcloud-likes.willshowell.com)!
 
 This site was built as an experiment in using the SoundCloud public API along 
 with Flask.
 
-### TODO
-- Add tests
-- Reformat profile page
-- Make stream CSS prettier
-- Make worker process more robust for unlikes
-- Implement search
-- Add 404 page
+
+## Installation
+
+Create a virtual environment:
+
+```
+$ mkvirtualenv like-stream --python=python3
+```
+
+Install dependencies:
+
+```
+$ pip install -r requirements.txt
+```
+
+Create a local PostgreSQL databse:
+
+```
+psql
+-> CREATE DATABASE dbname;
+-> CREATE USER username WITH PASSWORD password;
+-> GRANT ALL PRIVILEGES ON DATABASE dbname TO username;
+-> \q
+```
+
+Create a `config.py` file in the root directory:
+
+```
+DEBUG = True
+
+DATABASE = {
+  'NAME': 'dbname',
+  'USER': 'username',
+  'PASSWORD': 'password',
+  'HOST': 'localhost',
+  'PORT': ''
+}
+
+SECRET_KEY = '<some secret key>'
+
+SOUNDCLOUD_CLIENT_ID = '<your api key>'
+```
 
 
 ## Running
+
+### Development
+To run the devlopment server:
+
 ```
-gunicorn -b 127.0.0.1:8000 app:app
+$ python run.py
 ```
 
-Also set up a cron job to run the background worker process. In order to have it check for
-new updates every 15 minutes, add the following to your crontab:
+To run the background update process:
+
+```
+$ python worker.py
+```
+
+### Production
+To run the production server:
+
+```
+$ gunicorn -b 127.0.0.1:8000 app:app
+```
+
+To run the background process every 15 minutes, add
+the following to your crontab (`$ crontab -e`):
 
 ```
 */15 * * * * /full/path/to/env/bin/python /full/path/to/project/worker.py
