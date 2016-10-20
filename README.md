@@ -81,5 +81,11 @@ the following to your crontab (`$ crontab -e`):
 */15 * * * * /full/path/to/env/bin/python /full/path/to/project/worker.py
 ```
 
-
+### TODO Tasks
+- [ ] Update form input for new targets
+- [ ] Set intervals to keep checking if last song has finished (stops in inactive tab)
+- [ ] Auto load at top when new songs are available
+- [ ] Use auth to provide suggested targets
+- [ ] Autocomplete names
+- [ ] Use meta tag for better mobile experience
 
